@@ -9,5 +9,7 @@ module.exports = class extends Event {
 
   execute(ctx = null) {
     console.log('Ready');
+
+    this.client.user.setActivity(`${this.client.config['discord']['prefix']}lookup ありがとう`);
   }
 };
