@@ -36,8 +36,8 @@ module.exports = class extends Command {
       `JLPT: ${data.jlpt.length ? data.jlpt.map(x => /\d/.exec(x)[0]).join(', ') : "N/A"}\nWanikani: ${data.tags.length ? /\d+/.exec(data.tags[0])[0] : "N/A"}`,
       false
     );
-    embed.addField("Definitions", data.senses[0].english_definitions.join('; '), false);
-    embed.addField("Parts of Speech", data.senses[0].parts_of_speech.join('; '), false);
+    if (data.senses[0].english_definitions.length) embed.addField("Definitions", data.senses[0].english_definitions.join('; '), false);
+    if (data.senses[0].parts_of_speech.length) embed.addField("Parts of Speech", data.senses[0].parts_of_speech.join('; '), false);
 
     if (data.senses[0].restrictions.length) embed.addField("Restrictions", data.senses[0].restrictions.join('; '), true);
     if (data.senses[0].tags.length) embed.addField("Additional Tags", data.senses[0].tags.join('; '), true);
