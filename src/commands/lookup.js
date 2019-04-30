@@ -21,6 +21,8 @@ module.exports = class extends Command {
 
     if (!res.data) return message.reply(`No entries found | **${match[2]}**`);
 
+    if (match[1] && match[1] > res.data.length) match[1] = res.data.length;
+
     const data = res.data[
       (match[1] && res.data.length >= match[1]) ? Number(match[1]) - 1 : 0
     ];
