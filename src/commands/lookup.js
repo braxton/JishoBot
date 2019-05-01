@@ -19,7 +19,7 @@ module.exports = class extends Command {
 
     res = res.body;
 
-    if (!res.data) return message.reply(`No entries found | **${match[2]}**`);
+    if (!res.data.length) return message.reply(`No entries found | **${match[2]}**`);
 
     if (match[1] && match[1] > res.data.length) match[1] = res.data.length;
 
