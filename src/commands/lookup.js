@@ -35,7 +35,7 @@ module.exports = class extends Command {
 
     return {
       "data" : res.data[(page && res.data.length >= page) ? Number(page) - 1 : 0],
-      "raw": res
+      "res": res
     }
   }
 
