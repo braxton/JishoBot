@@ -7,7 +7,7 @@ module.exports = class extends Event {
     });
   }
 
-  execute(reaction, user) {
+  async execute(reaction, user) {
     if (user.id === this.client.user.id) return;
     const message = reaction.message;
 
