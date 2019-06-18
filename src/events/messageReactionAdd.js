@@ -37,10 +37,10 @@ module.exports = class extends Event {
     if (pages[1] === null) return;
 
     const lookupCMD = this.client.commands.get('lookup');
-    const data = await lookupCMD.fetchJisho(searchTerm[1], pages[1]);
+    const { data, res } = await lookupCMD.fetchJisho(searchTerm[1], pages[1]);
     if (!data) return message.channel.send(`An error occurred while changing page on message ${message.id}.`);
 
-    const embed = lookupCMD.buildEmbed(searchTerm[1], pages[1], data);
+    const embed = lookupCMD.buildEmbed(searchTerm[1], pages[1], res.data.length, data);
 
     message.edit({ embed });
   }
