@@ -10,6 +10,8 @@ module.exports = class extends Event {
   execute(ctx = null) {
     console.log('Ready');
 
-    this.client.user.setActivity(`${this.client.config['discord']['prefix']}lookup ありがとう`);
+    this.client.gameInterval = setInterval(() => {
+      this.client.user.setActivity(`${this.client.config['discord']['prefix']}lookup ありがとう`)
+    }, 5 * 60 * 1000);
   }
 };

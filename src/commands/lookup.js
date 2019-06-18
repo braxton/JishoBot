@@ -14,24 +14,36 @@ module.exports = class extends Command {
     const match = /(?:(?:lookup|look|lu|lp)(?:\s+--?p\s+(\d+))?\s+([\w\W]+))/.exec(message.content);
     if (!match) return message.reply('**ERROR:** No search term supplied.');
 
-    let res = await fetch.get(encodeURI(`https://jisho.org/api/v1/search/words?keyword=${match[2]}`));
-    if (!res || res.body.meta.status !== 200) return message.reply("**ERROR:** Unable to interact with Jisho's API. Try again later.");
+    const data = await this.fetchJisho(match[2], match[1] || null);
+    if (!data) return message.reply(`No entries found | **${match[2]}**`);
+    
+    const embed = this.buildEmbed(match[2], match[1] || 1, data);
+
+    const m = await message.channel.send(res.data.length > 1 ? "Multiple pages detected. Use `--p #` to get alternative data entries" : "", { embed });
+    await m.react("⬅");
+    await m.react("➡");
+  }
+
+  async fetchJisho(term, page = null) {
+    let res = await fetch.get(encodeURI(`https://jisho.org/api/v1/search/words?keyword=${term}`));
+    if (!res || res.body.meta.status !== 200) return false;
+    if (!res.body.data.length) return false;
 
     res = res.body;
 
-    if (!res.data.length) return message.reply(`No entries found | **${match[2]}**`);
+    if (page && page > res.data.length) page = res.data.length;
 
-    if (match[1] && match[1] > res.data.length) match[1] = res.data.length;
-
-    const data = res.data[
-      (match[1] && res.data.length >= match[1]) ? Number(match[1]) - 1 : 0
+    return res.data[
+      (page && res.data.length >= page) ? Number(page) - 1 : 0
     ];
+  }
 
+  buildEmbed(term, page, data) {
     const embed = new MessageEmbed()
-      .setTitle(`${match[2]} - Jisho Entry `)
+      .setTitle(`${term} - Jisho Entry `)
       .setColor(0x3D9A1B)
-      .setFooter(`Page ${match[1] || 1} of ${res.data.length} | Made with ❤ by Packer#9020`);
-    
+      .setFooter(`Page ${page} of ${res.data.length} | Made with ❤ by Packer#9020`);
+  
     embed.addField("Reading", data.japanese[0].word ? `${data.japanese[0].word} ( ${data.japanese[0].reading} )` : data.japanese[0].reading, false);
     embed.addField(
       "JLPT/Wanikani Levels",
@@ -43,8 +55,7 @@ module.exports = class extends Command {
 
     if (data.senses[0].restrictions.length) embed.addField("Restrictions", data.senses[0].restrictions.join('; '), true);
     if (data.senses[0].tags.length) embed.addField("Additional Tags", data.senses[0].tags.join('; '), true);
-    
 
-    message.channel.send(res.data.length > 1 ? "Multiple pages detected. Use `--p #` to get alternative data entries" : "", { embed });
+    return embed;
   }
 };
