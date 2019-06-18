@@ -40,8 +40,8 @@ module.exports = class extends Event {
     const { data, res } = await lookupCMD.fetchJisho(searchTerm[1], pages[1]);
     if (!data) return message.channel.send(`An error occurred while changing page on message ${message.id}.`);
 
-    const embed = lookupCMD.buildEmbed(searchTerm[1], pages[1], res.data.length, data);
+    const toSend = lookupCMD.buildEmbed(searchTerm[1], pages[1], res.data.length, data);
 
-    message.edit({ embed });
+    message.edit({ embed: toSend });
   }
 };
