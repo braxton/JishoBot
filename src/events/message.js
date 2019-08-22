@@ -9,6 +9,7 @@ module.exports = class extends Event {
 
   async execute(ctx = null) {
     if (ctx.author.bot) return;
+    if (ctx.channel.type !== "text") return;
 
     if (!ctx.content.startsWith(this.client.config['discord']['prefix'])) return;
 
